@@ -117,8 +117,21 @@ onglets = st.tabs(["🎯 Le projet", "📊 Analyse", "👥 L'équipe", "✅ Conc
 with onglets[0]:
     st.header("🎯 Objectif du projet")
     st.markdown("""
-    L'objectif de ce projet est de créer une application web permettant la recommandation de films grâce à un modèle de Machine Learning.  
-    Cette application s'adresse aux cinéphiles souhaitant découvrir de nouveaux contenus adaptés à leurs goûts.
+
+
+Un cinéma indépendant de la Creuse, en perte de vitesse, a décidé de se digitaliser. Il souhaite créer un site capable de recommander des films aux visiteurs, même sans connaître leurs goûts au départ (situation de cold start).
+
+En tant que Data Analysts freelances, notre mission consistai à :
+                
+   - Étudier le contexte local, pour adapter l’offre aux préférences régionales (cinéma en Creuse).
+
+   - Analyser une base de données de films (issues d’IMDb et TMDB), puis la retravailler: nettoyage, filtrage etc, dans l'optique d'entrainer un modèle de ML de recommandation de films.
+
+   - Construire un système de recommandation de films à partir d’algorithmes de machine learning.
+
+   - Développer une interface en ligne sur Streamlit permettant aux Creusois d'obtenir des recommandations de films.
+
+L’objectif final : offrir aux habitants un service digital en complément du cinéma physique, accessible depuis chez eux.
     """)
 
 with onglets[1]:
@@ -375,13 +388,29 @@ with onglets[1]:
 
 with onglets[2]:
     st.header("👥 L'équipe projet")
-    st.markdown("""
-    Ce projet a été réalisé dans le cadre d'une formation de Data Analyst par :
-    - Karim
-    - Asseguerem
-    - Grace
-    - Nathan
-    """)
+    st.markdown("Rencontrez les membres passionnés derrière **CreuzFlix** :")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.image("https://i.imgur.com/7OK5LB4.png", width=180)
+        st.subheader("🧠 Karim")
+        st.markdown("Audacieux, sérieux, maître incontesté du machine learning.")
+
+    with col2:
+        st.image("https://i.imgur.com/xjkQgng.png", width=180)
+        st.subheader("👨‍💻 Asseguerem")
+        st.markdown("Curieux, vigilant, padawan de la Data et de la gestion de projet.")
+
+    with col3:
+        st.image("https://i.imgur.com/EeXfKXb.png", width=180)
+        st.subheader("🐆 Grace")
+        st.markdown("La légende raconte que c'est elle qui a découvert la Creuse lors d'une expédition maritime.")
+
+    with col4:
+        st.image("https://i.imgur.com/2lmsWdp.png", width=180)
+        st.subheader("🦆 Nathan")
+        st.markdown("Souple, élégant, pourfendeur de Streamlit.")
 
 with onglets[3]:
     st.header("✅ Conclusion et perspectives")
