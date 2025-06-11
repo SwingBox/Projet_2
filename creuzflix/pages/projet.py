@@ -310,7 +310,7 @@ with onglets[1]:
     col1, col2 = st.columns([1, 1], gap="large")
 
     with col1:
-        st.image("https://i.imgur.com/MOgzRfh.png")
+        st.image("https://i.imgur.com/JNGU5Yz.png")
 
     with col2:
         st.markdown("""
