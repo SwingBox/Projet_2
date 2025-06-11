@@ -121,7 +121,7 @@ with onglets[0]:
 
 Un cinéma indépendant de la Creuse, en perte de vitesse, a décidé de se digitaliser. Il souhaite créer un site capable de recommander des films aux visiteurs, même sans connaître leurs goûts au départ (situation de cold start).
 
-En tant que Data Analysts freelances, notre mission consistai à :
+En tant que Data Analysts freelances, notre mission consistait à :
                 
    - Étudier le contexte local, pour adapter l’offre aux préférences régionales (cinéma en Creuse).
 
