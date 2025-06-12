@@ -1,17 +1,28 @@
 import streamlit as st
+import pandas as pd
 import requests
 
-# Configuration initiale de la page
+# Configuration initiale
 st.set_page_config(page_title="Creuzflix", layout="wide", initial_sidebar_state="collapsed")
 
-# Custom CSS pour hover effets
+# --- Chargement des données ---
+data = "https://raw.githubusercontent.com/SwingBox/Projet_2/refs/heads/Nathan/creuzflix/Movies.csv"
+df = pd.read_csv(data, sep='\t', low_memory=False)
+
+# --- Préparation des films par popularité ---
+df['popularity'] = pd.to_numeric(df['popularity'], errors='coerce')
+df_sorted = df.sort_values(by="popularity", ascending=False)
+
+top5_populaires = df_sorted.head(5)
+next15_populaires = df_sorted.iloc[5:20]
+
+# --- CSS personnalisé ---
 st.markdown("""
 <style>
 html, body, .main, .block-container, .stApp {
     background-color: #0f0f0f !important;
     color: white !important;
 }
-
 h2.section-title {
     font-size: 1.4rem;
     font-weight: bold;
@@ -19,7 +30,6 @@ h2.section-title {
     margin-bottom: 1rem;
     margin-top: 2rem;
 }
-
 .stButton > button {
     background-color: transparent;
     color: white !important;
@@ -34,41 +44,36 @@ h2.section-title {
     margin-right: 0.3rem;
     margin-top: 6rem;
 }
-
 .stButton > button:hover {
     background-color: #333333 !important;
 }
-
 .film-card:hover {
     transform: scale(1.05);
     transition: 0.2s ease-in-out;
 }
-
 .block-container {
     padding-top: 2rem !important;
 }
-
 .featured-row {
     display: flex;
     justify-content: space-between;
     gap: 10px;
     overflow: hidden;
 }
-
 .featured-item {
     flex: 1;
     transition: flex 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
-
 .featured-item:hover {
     flex: 2;
     transform: scale(1.03);
     z-index: 1;
 }
-
 .featured-item img {
     width: 100%;
     border-radius: 8px;
+    max-height: 320px;
+    object-fit: cover;
 }
 .background-overlay {
     position: fixed;
@@ -92,7 +97,7 @@ h2.section-title {
 """, unsafe_allow_html=True)
 
 # --- Bandeau supérieur ---
-col1, col2, col3 = st.columns([1.2,6,1])
+col1, col2, col3 = st.columns([1.2, 6, 1])
 with col1:
     st.image("https://i.imgur.com/aTk9bwU.png", width=288)
 
@@ -111,37 +116,32 @@ with col2:
         if st.button("🎭 Acteurs"):
             st.switch_page("pages/acteurs.py")
 
-# Zone de recherche conditionnelle
+# --- Zone de recherche ---
 if st.session_state.get("show_search", False):
     search = st.text_input("Rechercher un film", "")
 
-# --- Bannières de films mis en avant avec effet carrousel ---
+# --- Section "Films mis en avant" ---
 st.markdown('<h2 class="section-title">🎞️ Films mis en avant</h2>', unsafe_allow_html=True)
-st.markdown("""
-<div class="featured-row">
-    <div class="featured-item">
-        <img src="https://i.imgur.com/rPCNSbp.jpeg" alt="Film 1">
-    </div>
-    <div class="featured-item">
-        <img src="https://i.imgur.com/rPCNSbp.jpeg" alt="Film 2">
-    </div>
-    <div class="featured-item">
-        <img src="https://i.imgur.com/rPCNSbp.jpeg" alt="Film 3">
-    </div>
-    <div class="featured-item">
-        <img src="https://i.imgur.com/rPCNSbp.jpeg" alt="Film 4">
-    </div>
-    <div class="featured-item">
-        <img src="https://i.imgur.com/rPCNSbp.jpeg" alt="Film 5">
-    </div>
-</div>
-""", unsafe_allow_html=True)
+# Affichage horizontal via des colonnes Streamlit
+cols = st.columns(len(top5_populaires))
 
-# --- Grille de films populaires ---
+for col, (_, row) in zip(cols, top5_populaires.iterrows()):
+    with col:
+        img_url = f"https://image.tmdb.org/t/p/w500{row['poster_path']}" if pd.notna(row['poster_path']) else "https://via.placeholder.com/300x450?text=No+Image"
+        st.image(img_url, use_container_width=True)
+        st.caption(row["title_x"])
+
+
+# --- Section "Films populaires" dynamique ---
 st.markdown('<h2 class="section-title">🔥 Films populaires</h2>', unsafe_allow_html=True)
-for _ in range(3):
-    cols = st.columns(8)
-    for col in cols:
+chunk_size = 8
+chunks = [next15_populaires.iloc[i:i+chunk_size] for i in range(0, len(next15_populaires), chunk_size)]
+
+for chunk in chunks:
+    cols = st.columns(len(chunk))
+    for col, (_, row) in zip(cols, chunk.iterrows()):
         with col:
-            st.image("https://images.affiches-et-posters.com//albums/3/2627/affiche-film-shrek-173.jpg", use_container_width=True)
-            st.caption("Titre du film")
+            img_url = f"https://image.tmdb.org/t/p/w500{row['poster_path']}" if pd.notna(row['poster_path']) else "https://via.placeholder.com/300x450?text=No+Image"
+            st.image(img_url, use_container_width=True)
+            st.caption(row["title_x"])
+
