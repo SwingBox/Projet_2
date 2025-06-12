@@ -395,7 +395,7 @@ with onglets[1]:
 
 with onglets[2]:
     #st.header("📈 Statistiques et Machine Learning")
-    data = "https://github.com/SwingBox/Projet_2/blob/Karim/Movies.csv"
+    data = "/Users/Nathan Vallet/Desktop/PROJET 2/vs_code_projet_2/creuzflix/Movies.csv"
     df = pd.read_csv(data,sep = '\t', low_memory=False)
 
     columns = ['category','primaryName','ordering','genres','characters','production_companies_name']
