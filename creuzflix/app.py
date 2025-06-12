@@ -132,16 +132,56 @@ for col, (_, row) in zip(cols, top5_populaires.iterrows()):
         st.caption(row["title_x"])
 
 
+import streamlit.components.v1 as components
+
 # --- Section "Films populaires" dynamique ---
 st.markdown('<h2 class="section-title">🔥 Films populaires</h2>', unsafe_allow_html=True)
-chunk_size = 8
-chunks = [next15_populaires.iloc[i:i+chunk_size] for i in range(0, len(next15_populaires), chunk_size)]
 
-for chunk in chunks:
-    cols = st.columns(len(chunk))
-    for col, (_, row) in zip(cols, chunk.iterrows()):
-        with col:
-            img_url = f"https://image.tmdb.org/t/p/w500{row['poster_path']}" if pd.notna(row['poster_path']) else "https://via.placeholder.com/300x450?text=No+Image"
-            st.image(img_url, use_container_width=True)
-            st.caption(row["title_x"])
+# Récupération de 16 films (5 premiers déjà utilisés)
+next16_populaires = df_sorted.iloc[5:21]
 
+# Construction HTML en grid responsive
+pop_html = """
+<style>
+.pop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    padding: 10px 0;
+}
+.pop-card {
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+.pop-card:hover {
+    transform: scale(1.05);
+}
+.pop-card img {
+    width: 100%;
+    height: 270px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.pop-card p {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: white;
+}
+</style>
+<div class="pop-grid">
+"""
+
+for _, row in next16_populaires.iterrows():
+    img_url = f"https://image.tmdb.org/t/p/w500{row['poster_path']}" if pd.notna(row['poster_path']) else "https://via.placeholder.com/300x450?text=No+Image"
+    title = row["title_x"]
+    pop_html += f"""
+    <div class="pop-card">
+        <img src="{img_url}" alt="{title}">
+        <p>{title}</p>
+    </div>
+    """
+
+pop_html += "</div>"
+
+# Affichage dans Streamlit
+components.html(pop_html, height=950, scrolling=False)
