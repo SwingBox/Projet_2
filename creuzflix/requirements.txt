@@ -7,3 +7,4 @@ seaborn>=0.12.2
 plotly>=5.17.0
 streamlit-searchbox
 scikit-learn
+category-encoders
