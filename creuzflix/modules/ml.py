@@ -23,7 +23,7 @@ from sklearn.decomposition import PCA
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
-X_reduced = pd.read_csv('https://raw.githubusercontent.com/SwingBox/Projet_2/refs/heads/Karim/X_final.csv', sep = '\t')
+X_reduced = pd.read_csv('https://raw.githubusercontent.com/SwingBox/Projet_2/refs/heads/Dev/X_finalv2.csv', sep = '\t')
 
 preprocessor = ColumnTransformer([
     ("num", StandardScaler(), ['production_companies_name_hash_0','directors_hash_1','genres_hash_0','genres_hash_1','genres_hash_2',]),
@@ -51,7 +51,7 @@ def recommend_movies_dbscan(movie_title, n_recommendations=10):
 
     # Extraction des films du même cluster
     cluster_movies_idx = [i for i, label in enumerate(labels_dbscan) if label == cluster_id]
-    recommended_movies = X_reduced.iloc[cluster_movies_idx][['Title','genres1']]
+    recommended_movies = X_reduced.iloc[cluster_movies_idx][['Title','genres1','startYear']].sort_values('startYear', ascending = False)
 
     # Vérification de la cohérence des genres
     movie_genre = X_reduced.iloc[movie_index]['genres1']
@@ -82,4 +82,4 @@ def refine_with_cosine(movie_title, n_recommendations=10):
     similar_movies_idx = similarities[movie_index].argsort()[::-1][1:n_recommendations+1]
 
     # Affichage des recommandations affinées
-    return genre_filtered.iloc[similar_movies_idx][['Title', 'genres1']].head(10)
+    return genre_filtered.iloc[similar_movies_idx][['Title', 'genres1','startYear']].sort_values('startYear', ascending = False).head(10)
