@@ -97,14 +97,12 @@ with col2:
         if st.button("🎭 Acteurs"):
             st.switch_page("pages/acteurs.py")
 
-# --- Tuiles cliquables ---
-def display_recommendation_tile(rec_title, rec_url, i):
-    st.image(rec_url, use_container_width=True)
-    if st.button(f"🎥 {rec_title}", key=f"rec_btn_{i}"):
-        st.session_state.selected_film = rec_title
+# --- Fonction d’affichage cliquable ---
+def display_clickable_film_tile(title, poster_url, i):
+    st.image(poster_url, use_container_width=True)
+    if st.button(f"🎥 {title}", key=f"film_btn_{i}"):
+        st.session_state.selected_film = title
         st.session_state.film_changed = True
-        if 'film_search_reveal' in st.session_state:
-            del st.session_state['film_search_reveal']
         st.rerun()
 
 # --- Affichage fiche film ---
@@ -134,7 +132,7 @@ def display_film_info(film_title):
                 rec_title = rec["Title"]
                 rec_path = df[df["title_x"] == rec_title]["poster_path"].values
                 rec_url = f"https://image.tmdb.org/t/p/w500{rec_path[0]}" if len(rec_path) > 0 and pd.notna(rec_path[0]) else "https://via.placeholder.com/300x450?text=No+Image"
-                display_recommendation_tile(rec_title, rec_url, i)
+                display_clickable_film_tile(rec_title, rec_url, i + 1000)
 
 # --- Recherche ---
 if st.session_state.get("show_search", False):
@@ -154,52 +152,16 @@ if st.session_state.get("show_search", False):
 # --- Films mis en avant ---
 st.markdown('<h2 class="section-title">🎞️ Films mis en avant</h2>', unsafe_allow_html=True)
 cols = st.columns(len(top5_populaires))
-for col, (_, row) in zip(cols, top5_populaires.iterrows()):
+for i, (col, (_, row)) in enumerate(zip(cols, top5_populaires.iterrows())):
     with col:
         img_url = f"https://image.tmdb.org/t/p/w500{row['poster_path']}" if pd.notna(row['poster_path']) else "https://via.placeholder.com/300x450?text=No+Image"
-        st.image(img_url, use_container_width=True)
-        st.caption(row["title_x"])
+        display_clickable_film_tile(row["title_x"], img_url, i + 200)
 
-# --- Films populaires ---
+# --- Films populaires (8 par ligne) ---
 st.markdown('<h2 class="section-title">🔥 Films populaires</h2>', unsafe_allow_html=True)
-pop_html = """
-<style>
-.pop-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
-    padding: 10px 0;
-}
-.pop-card {
-    text-align: center;
-    transition: transform 0.3s ease-in-out;
-}
-.pop-card:hover {
-    transform: scale(1.05);
-}
-.pop-card img {
-    width: 100%;
-    height: 270px;
-    object-fit: cover;
-    border-radius: 10px;
-}
-.pop-card p {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: white;
-}
-</style>
-<div class="pop-grid">
-"""
-for _, row in next16_populaires.iterrows():
-    img_url = f"https://image.tmdb.org/t/p/w500{row['poster_path']}" if pd.notna(row['poster_path']) else "https://via.placeholder.com/300x450?text=No+Image"
-    title = row["title_x"]
-    pop_html += f"""
-    <div class="pop-card">
-        <img src="{img_url}" alt="{title}">
-        <p>{title}</p>
-    </div>
-    """
-pop_html += "</div>"
-components.html(pop_html, height=950, scrolling=False)
-
+cols_pop = st.columns(8)
+for i, (_, row) in enumerate(next16_populaires.iterrows()):
+    col = cols_pop[i % 8]
+    with col:
+        img_url = f"https://image.tmdb.org/t/p/w342{row['poster_path']}" if pd.notna(row['poster_path']) else "https://via.placeholder.com/200x300?text=No+Image"
+        display_clickable_film_tile(row["title_x"], img_url, i + 300)
