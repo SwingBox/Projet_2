@@ -217,10 +217,6 @@ L’objectif final : offrir aux habitants un service digital en complément du c
     st.subheader("Gestion et nettoyage des données :")
     st.markdown("- Expressions régulières (re) : pour le nettoyage et la manipulation textuelle.")
 
-    # APIs utilisées
-    st.subheader("APIs utilisées :")
-    st.markdown("- API TMDB (The Movie Database) : pour la création de la base de données, les images des films, des acteurs etc. (titres, genres, notes, acteurs, etc.).")
-    st.markdown("- API OpenAI : pour la génération de mots-clés à partir des synopsis.")
 
     # Développement de l'interface utilisateur
     st.subheader("Développement de l'interface utilisateur :")
